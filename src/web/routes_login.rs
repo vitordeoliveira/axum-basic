@@ -17,6 +17,7 @@ async fn api_login(cookies: Cookies, payload: Json<LoginPayload>) -> Result<Json
         return Err(Error::LoginFail);
     }
 
+    // FIXME:: Implement real db/auth generation/signature.
     cookies.add(Cookie::new(web::AUTH_TOKEN, "user-1.exp.sign"));
     //
     // Create the success body
