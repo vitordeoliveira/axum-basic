@@ -34,7 +34,7 @@ async fn quick_dev() -> Result<()> {
 
     hc.do_get("/api/tickets").await?.print().await?;
 
-    hc.do_delete("/api/tickets/0").await?.print().await?;
+    // hc.do_delete("/api/tickets/0").await?.print().await?;
 
     Ok(())
 }
