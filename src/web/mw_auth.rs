@@ -39,6 +39,7 @@ pub async fn mw_ctx_resolver(
 
     let auth_token = cookies.get(AUTH_TOKEN).map(|c| c.value().to_string());
 
+    // Compute Result<Ctx>.
     let result_ctx = match auth_token
         .ok_or(Error::AuthFailNoAuthTokenCookie)
         .and_then(parse_token)
@@ -50,14 +51,13 @@ pub async fn mw_ctx_resolver(
         Err(e) => Err(e),
     };
 
+    // Remove the cookie if something went wrong other than NoAuthTokenCookie.
     if result_ctx.is_err() && !matches!(result_ctx, Err(Error::AuthFailNoAuthTokenCookie)) {
         cookies.remove(Cookie::from(AUTH_TOKEN))
     }
 
-    println!(
-        "->> {:<12} - mw_ctx_resolver - {result_ctx:?}",
-        "MIDDLEWARE"
-    );
+    // Store the ctx_result in the request extension.
+    req.extensions_mut().insert(result_ctx);
 
     Ok(next.run(req).await)
 }
